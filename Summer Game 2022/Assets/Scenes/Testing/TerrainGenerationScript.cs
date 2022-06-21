@@ -38,8 +38,17 @@ public class TerrainGenerationScript : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite;
-
-                if (y < BedRockLayerHeight)
+                if (y >= height-2)
+                {
+                    tileSprite = grass;
+                    GameObject newTile = new GameObject();
+                    newTile.transform.parent = this.transform;
+                    newTile.AddComponent<SpriteRenderer>();
+                    newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+                    newTile.name = tileSprite.name;
+                    newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                }
+                else if (y < BedRockLayerHeight)
                 {
                     tileSprite = bedRock;
                     GameObject newTile = new GameObject();
