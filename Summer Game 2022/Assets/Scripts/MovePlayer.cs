@@ -64,10 +64,22 @@ public class MovePlayer : MonoBehaviour
         transform.position += dp * Time.deltaTime;
     }
 
-    void onCollisionEnter2D(Collision col)
+    void OnCollisionEnter2D(Collision2D col)
     {
-        Debug.Log("Hello");
-        if(col.gameObject.tag == "Walkable")
+
+        RaycastHit2D left = Physics2D.Raycast(transform.position, Vector2.left, 1f);
+        RaycastHit2D right = Physics2D.Raycast(transform.position, Vector2.right, 1f);
+        RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+
+        Debug.DrawRay(transform.position, Vector2.right, Color.green, 10000f);
+
+        if (left.collider != null || right.collider != null)
+        {
+            Debug.Log("Side Hit");
+            dp.x = 0;
+        }
+        
+        if(down.collider != null)
         {
             isGrounded = true;
         }
