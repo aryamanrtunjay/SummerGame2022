@@ -39,6 +39,7 @@ public class TerrainGenerationScript : MonoBehaviour
     public Texture2D ironSpread;
     public Texture2D goldSpread;
     public Texture2D diamondSpread;
+   
 
 
 
@@ -108,7 +109,7 @@ public class TerrainGenerationScript : MonoBehaviour
             float height = Mathf.PerlinNoise((x + seed) * TerrainFreq, seed * TerrainFreq) * HeightMultiplier + HeightAddition;
             for (int y = 0; y < height; y++)
             {
-                Sprite tileSprite;
+                Sprite tileSprite = tileAtlas.dirt.tileSprite;
                 if (y >= height-2) //Generates grass
                 {
                     tileSprite = tileAtlas.grass.tileSprite;
@@ -128,7 +129,37 @@ public class TerrainGenerationScript : MonoBehaviour
                 {
                     if (y < height - dirtlayerDepth)
                     {
-                        tileSprite = tileAtlas.stone.tileSprite;
+
+                        if (coalSpread.GetPixel(x,y).r > 0.5f)
+                        {
+                            tileSprite = tileAtlas.coal.tileSprite;
+                        }
+                        else if (ironSpread.GetPixel(x, y).r > 0.5f)
+                        {
+                            if (y >= height * 0.4 && y <= height * 0.8)
+                            {
+                                tileSprite = tileAtlas.iron.tileSprite;
+                            }
+                        }
+                        else if (goldSpread.GetPixel(x, y).r > 0.5f)
+                        {
+                            if (y >= height * 0.225 && y <= height * 0.5)
+                            {
+                                tileSprite = tileAtlas.gold.tileSprite;
+                            }
+                        }
+                        else if (diamondSpread.GetPixel(x, y).r > 0.5f)
+                        {
+                            if (y <= height * 0.25)
+                            {
+                                tileSprite = tileAtlas.diamond.tileSprite;
+                            }
+                        }
+                        else
+                        {
+                            tileSprite = tileAtlas.stone.tileSprite;
+                        }
+                        
                     }
                     else
                     {
@@ -147,7 +178,14 @@ public class TerrainGenerationScript : MonoBehaviour
                         }
                         if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance ) //Ensures there is always stone between dirt and caves
                         {
-                            tileSprite = tileAtlas.stone.tileSprite;
+                            if (coalSpread.GetPixel(x, y).r > 0.5f)
+                            {
+                                tileSprite = tileAtlas.iron.tileSprite;
+                            }
+                            else
+                            {
+                                tileSprite = tileAtlas.stone.tileSprite;
+                            }
                             PlaceTile(tileSprite, x, y);
                         }
                     }
