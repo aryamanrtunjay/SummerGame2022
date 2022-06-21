@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
-    public int worldSize = 1000;
+    public int worldSize = 200;
     public float noiseFreq = 0.03f;
     private float seed;
     public Texture2D noiseTexture;
@@ -14,7 +14,7 @@ public class TerrainGenerationScript : MonoBehaviour
     public float TerrainFreq = 0.02f; //Freq of terrain changes (greater = changes more often)
     public float CaveChance = 0.4f; //How dark/light a spot needs to be to become a cave (derived from perlin noise texture) (More = more caves)
 
-    public int dirtlayerDepth = 5;
+    public int dirtlayerDepth = 7;
     public int BedRockLayerHeight = 5;
     public int DirtandStoneSeperationDistance = 5;
     public Sprite grass;
@@ -38,27 +38,15 @@ public class TerrainGenerationScript : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite;
-                if (y >= height-2)
+                if (y >= height-2) //Generates grass
                 {
                     tileSprite = grass;
-                    GameObject newTile = new GameObject();
-                    newTile.transform.parent = this.transform;
-                    newTile.AddComponent<SpriteRenderer>();
-                    newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                    newTile.name = tileSprite.name;
-                    newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                    newTile.AddComponent<BoxCollider2D>();
+                    PlaceTile(tileSprite, x, y);
                 }
-                else if (y < BedRockLayerHeight + Random.Range(-1,2))
+                else if (y < BedRockLayerHeight + Random.Range(-1,2)) //Generates Bedrock
                 {
                     tileSprite = bedRock;
-                    GameObject newTile = new GameObject();
-                    newTile.transform.parent = this.transform;
-                    newTile.AddComponent<SpriteRenderer>();
-                    newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                    newTile.name = tileSprite.name;
-                    newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                    newTile.AddComponent<BoxCollider2D>();
+                    PlaceTile(tileSprite, x, y);
                 }
                 else
                 {
@@ -72,37 +60,19 @@ public class TerrainGenerationScript : MonoBehaviour
                     }
                     if (noiseTexture.GetPixel(x, y).r > CaveChance)
                     {
-                        GameObject newTile = new GameObject();
-                        newTile.transform.parent = this.transform;
-                        newTile.AddComponent<SpriteRenderer>();
-                        newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                        newTile.name = tileSprite.name;
-                        newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                        newTile.AddComponent<BoxCollider2D>();
+                        PlaceTile(tileSprite, x, y);
                     }
                     else
                     {
-                        if (y > height - dirtlayerDepth)
+                        if (y > height - dirtlayerDepth) //Generates dirt
                         {
                             tileSprite = dirt;
-                            GameObject newTile = new GameObject();
-                            newTile.transform.parent = this.transform;
-                            newTile.AddComponent<SpriteRenderer>();
-                            newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                            newTile.name = tileSprite.name;
-                            newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                            newTile.AddComponent<BoxCollider2D>();
+                            PlaceTile(tileSprite, x, y);
                         }
-                        if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance )
+                        if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance ) //Ensures there is always stone between dirt and caves
                         {
                             tileSprite = stone;
-                            GameObject newTile = new GameObject();
-                            newTile.transform.parent = this.transform;
-                            newTile.AddComponent<SpriteRenderer>();
-                            newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                            newTile.name = tileSprite.name;
-                            newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-                            newTile.AddComponent<BoxCollider2D>();
+                            PlaceTile(tileSprite, x, y);
                         }
                     }
                 }
@@ -126,4 +96,16 @@ public class TerrainGenerationScript : MonoBehaviour
 
         noiseTexture.Apply();
     }
+
+    public void PlaceTile(Sprite tileSprite, float x, float y)
+    {
+        GameObject newTile = new GameObject();
+        newTile.transform.parent = this.transform;
+        newTile.AddComponent<SpriteRenderer>();
+        newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+        newTile.name = tileSprite.name;
+        newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+        newTile.AddComponent<BoxCollider2D>();
+    }
 }
+

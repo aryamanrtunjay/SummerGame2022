@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8637ce646a7fa3245a08d6264609bb9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldSize: 500
+  worldSize: 200
   noiseFreq: 0.03
   noiseTexture: {fileID: 0}
   HeightMultiplier: 50
