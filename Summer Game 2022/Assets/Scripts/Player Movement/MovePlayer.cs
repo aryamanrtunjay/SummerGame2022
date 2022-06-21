@@ -33,24 +33,50 @@ public class MovePlayer : MonoBehaviour
         // Ground Friction
         if(!Input.GetKey("a") && !Input.GetKey("d"))
         {
-            if(dp.x < -0.01)
+            if (isGrounded)
             {
-                dp.x += 0.008f;
-            }
-            else if(dp.x > 0.01)
-            {
-                dp.x -= 0.008f;
+                if (dp.x < -0.11)
+                {
+                    dp.x += 0.05f;
+                }
+                else if (dp.x > 0.11)
+                {
+                    dp.x -= 0.05f;
+                }
+                else
+                {
+                    dp.x = 0f;
+                }
             }
             else
             {
-                dp.x = 0f;
+                if (dp.x < -0.11)
+                {
+                    dp.x += 0.008f;
+                }
+                else if (dp.x > 0.11)
+                {
+                    dp.x -= 0.008f;
+                }
+                else
+                {
+                    dp.x = 0f;
+                }
             }
+        }
+
+        // Check collisions
+        RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+
+        if(down.collider == null)
+        {
+            isGrounded = false;
         }
 
         // Increase Y velocity if D is pressed by changing change in X
         if (Input.GetKey("space") && isGrounded)
         {
-            dp.y = 10f;
+            dp.y = 15f;
             isGrounded = false;
         }
 
@@ -58,7 +84,6 @@ public class MovePlayer : MonoBehaviour
         {
             dp.y = 0f;
         }
-        
 
         // Change player position by change in position (multiply by Time.deltaTime to make frame independent)
         transform.position += dp * Time.deltaTime;
@@ -66,22 +91,24 @@ public class MovePlayer : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D col)
     {
-
         RaycastHit2D left = Physics2D.Raycast(transform.position, Vector2.left, 1f);
         RaycastHit2D right = Physics2D.Raycast(transform.position, Vector2.right, 1f);
         RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 1f);
-
-        Debug.DrawRay(transform.position, Vector2.right, Color.green, 10000f);
+        RaycastHit2D up = Physics2D.Raycast(transform.position, Vector2.up, 1f);
 
         if (left.collider != null || right.collider != null)
         {
-            Debug.Log("Side Hit");
             dp.x = 0;
         }
         
         if(down.collider != null)
         {
             isGrounded = true;
+        }
+
+        if(up.collider != null)
+        {
+            dp.y = 0;
         }
     }
 }
