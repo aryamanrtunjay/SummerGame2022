@@ -47,8 +47,9 @@ public class TerrainGenerationScript : MonoBehaviour
                     newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
                     newTile.name = tileSprite.name;
                     newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                    newTile.AddComponent<BoxCollider2D>();
                 }
-                else if (y < BedRockLayerHeight)
+                else if (y < BedRockLayerHeight + Random.Range(-1,2))
                 {
                     tileSprite = bedRock;
                     GameObject newTile = new GameObject();
@@ -57,6 +58,7 @@ public class TerrainGenerationScript : MonoBehaviour
                     newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
                     newTile.name = tileSprite.name;
                     newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                    newTile.AddComponent<BoxCollider2D>();
                 }
                 else
                 {
@@ -76,6 +78,7 @@ public class TerrainGenerationScript : MonoBehaviour
                         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
                         newTile.name = tileSprite.name;
                         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                        newTile.AddComponent<BoxCollider2D>();
                     }
                     else
                     {
@@ -88,6 +91,7 @@ public class TerrainGenerationScript : MonoBehaviour
                             newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
                             newTile.name = tileSprite.name;
                             newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                            newTile.AddComponent<BoxCollider2D>();
                         }
                         if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance )
                         {
@@ -98,6 +102,7 @@ public class TerrainGenerationScript : MonoBehaviour
                             newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
                             newTile.name = tileSprite.name;
                             newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                            newTile.AddComponent<BoxCollider2D>();
                         }
                     }
                 }
