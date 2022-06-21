@@ -3,19 +3,24 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
-    public int worldSize = 100;
-    public float noiseFreq = 0.05f;
+    public int worldSize = 1000;
+    public float noiseFreq = 0.03f;
     private float seed;
     public Texture2D noiseTexture;
-    public float HeightMultiplier = 40f;
-    public float HeightAddition = 25;
-    public float caveFreq = 0.05f;
-    public float TerrainFreq = 0.05f;
-    public float CaveChance = 0.2f;
+
+    public float HeightMultiplier = 50f; //Steepness of terrain
+    public float HeightAddition = 200; //Overall Height of terrain
+    public float caveFreq = 0.05f; //Freq of caves (higher = more caves) (Used when making perlin texture; If higher, the noise in that area is more so more likely to make a cave)
+    public float TerrainFreq = 0.02f; //Freq of terrain changes (greater = changes more often)
+    public float CaveChance = 0.4f; //How dark/light a spot needs to be to become a cave (derived from perlin noise texture) (More = more caves)
+
     public int dirtlayerDepth = 5;
+    public int BedRockLayerHeight = 5;
+    public int DirtandStoneSeperationDistance = 5;
     public Sprite grass;
     public Sprite dirt;
     public Sprite stone;
+    public Sprite bedRock;
 
     private void Start()
     {
@@ -33,15 +38,28 @@ public class TerrainGenerationScript : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite;
-                if (y < height - dirtlayerDepth)
+
+                if (y < BedRockLayerHeight)
                 {
-                    tileSprite = stone;
+                    tileSprite = bedRock;
+                    GameObject newTile = new GameObject();
+                    newTile.transform.parent = this.transform;
+                    newTile.AddComponent<SpriteRenderer>();
+                    newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+                    newTile.name = tileSprite.name;
+                    newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
                 }
                 else
                 {
-                    tileSprite = dirt;
-                }
-                if (noiseTexture.GetPixel(x, y).r > CaveChance)  
+                    if (y < height - dirtlayerDepth)
+                    {
+                        tileSprite = stone;
+                    }
+                    else
+                    {
+                        tileSprite = dirt;
+                    }
+                    if (noiseTexture.GetPixel(x, y).r > CaveChance)
                     {
                         GameObject newTile = new GameObject();
                         newTile.transform.parent = this.transform;
@@ -50,17 +68,28 @@ public class TerrainGenerationScript : MonoBehaviour
                         newTile.name = tileSprite.name;
                         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
                     }
-                else
-                {
-                    if (y > height - dirtlayerDepth)
+                    else
                     {
-                        tileSprite = dirt;
-                        GameObject newTile = new GameObject();
-                        newTile.transform.parent = this.transform;
-                        newTile.AddComponent<SpriteRenderer>();
-                        newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-                        newTile.name = tileSprite.name;
-                        newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                        if (y > height - dirtlayerDepth)
+                        {
+                            tileSprite = dirt;
+                            GameObject newTile = new GameObject();
+                            newTile.transform.parent = this.transform;
+                            newTile.AddComponent<SpriteRenderer>();
+                            newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+                            newTile.name = tileSprite.name;
+                            newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                        }
+                        if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance )
+                        {
+                            tileSprite = stone;
+                            GameObject newTile = new GameObject();
+                            newTile.transform.parent = this.transform;
+                            newTile.AddComponent<SpriteRenderer>();
+                            newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+                            newTile.name = tileSprite.name;
+                            newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+                        }
                     }
                 }
                     
