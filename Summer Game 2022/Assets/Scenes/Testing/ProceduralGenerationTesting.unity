@@ -168,12 +168,7 @@ MonoBehaviour:
   TreeProbability: 40
   MinTreeHeight: 4
   MaxTreeHeight: 7
-  grass: {fileID: 21300000, guid: a50715ef296797540af22726fc393a8e, type: 3}
-  dirt: {fileID: 21300000, guid: ef349ee09cb3bce4daf3c6bfd15d28d9, type: 3}
-  stone: {fileID: 21300000, guid: bb2384f28296e5e40b7e5ef9d5e694da, type: 3}
-  bedRock: {fileID: 21300000, guid: 3744f5b420dddab4f9125cf96b94520d, type: 3}
-  log: {fileID: 21300000, guid: ef349ee09cb3bce4daf3c6bfd15d28d9, type: 3}
-  leaf: {fileID: 21300000, guid: a50715ef296797540af22726fc393a8e, type: 3}
+  tileAtlas: {fileID: 11400000, guid: d6b27c5a8d8147e4096887f198bd55c9, type: 2}
 --- !u!4 &478197920
 Transform:
   m_ObjectHideFlags: 0

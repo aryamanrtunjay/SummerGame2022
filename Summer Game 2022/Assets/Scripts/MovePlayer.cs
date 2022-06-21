@@ -75,7 +75,7 @@ public class MovePlayer : MonoBehaviour
 
         if (left.collider != null || right.collider != null)
         {
-            Debug.Log("Side Hit");
+            
             dp.x = 0;
         }
         

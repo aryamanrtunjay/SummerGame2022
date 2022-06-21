@@ -28,13 +28,8 @@ public class TerrainGenerationScript : MonoBehaviour
     public int MinTreeHeight = 4;
     public int MaxTreeHeight = 7;
 
-    [Header("Sprites")]
-    public Sprite grass;
-    public Sprite dirt;
-    public Sprite stone;
-    public Sprite bedRock;
-    public Sprite log;
-    public Sprite leaf;
+    [Header("Tile Atlas")]
+    public TileAtlas tileAtlas;
 
   
 
@@ -70,7 +65,7 @@ public class TerrainGenerationScript : MonoBehaviour
                 Sprite tileSprite;
                 if (y >= height-2) //Generates grass
                 {
-                    tileSprite = grass;
+                    tileSprite = tileAtlas.grass.tileSprite;
                     PlaceTile(tileSprite, x, y);
                     int t = Random.Range(0, TreeProbability);
                     if (t == 1)
@@ -80,18 +75,18 @@ public class TerrainGenerationScript : MonoBehaviour
                 }
                 else if (y < BedRockLayerHeight + Random.Range(-1,2)) //Generates Bedrock
                 {
-                    tileSprite = bedRock;
+                    tileSprite = tileAtlas.bedRock.tileSprite;
                     PlaceTile(tileSprite, x, y);
                 }
                 else
                 {
                     if (y < height - dirtlayerDepth)
                     {
-                        tileSprite = stone;
+                        tileSprite = tileAtlas.stone.tileSprite;
                     }
                     else
                     {
-                        tileSprite = dirt;
+                        tileSprite = tileAtlas.dirt.tileSprite;
                     }
                     if (noiseTexture.GetPixel(x, y).r > CaveChance)
                     {
@@ -101,12 +96,12 @@ public class TerrainGenerationScript : MonoBehaviour
                     {
                         if (y > height - dirtlayerDepth) //Generates dirt
                         {
-                            tileSprite = dirt;
+                            tileSprite = tileAtlas.dirt.tileSprite;
                             PlaceTile(tileSprite, x, y);
                         }
                         if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance ) //Ensures there is always stone between dirt and caves
                         {
-                            tileSprite = stone;
+                            tileSprite = tileAtlas.stone.tileSprite;
                             PlaceTile(tileSprite, x, y);
                         }
                     }
@@ -137,19 +132,19 @@ public class TerrainGenerationScript : MonoBehaviour
         int TreeHeight = Random.Range(MinTreeHeight, MaxTreeHeight);
         for (int i = 0; i < TreeHeight; i++)
         {
-            PlaceTile(log, x, y+i);
+            PlaceTile(tileAtlas.log.tileSprite, x, y+i);
         }
 
         //Leaves
-        PlaceTile(leaf, x, y + TreeHeight);
-        PlaceTile(leaf, x, y + TreeHeight + 1);
-        PlaceTile(leaf, x, y + TreeHeight + 2);
+        PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight);
+        PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight + 1);
+        PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight + 2);
 
-        PlaceTile(leaf, x - 1, y + TreeHeight );
-        PlaceTile(leaf, x - 1, y + TreeHeight + 1);
+        PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight );
+        PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight + 1);
 
-        PlaceTile(leaf, x + 1, y + TreeHeight);
-        PlaceTile(leaf, x + 1, y + TreeHeight + 1);
+        PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight);
+        PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight + 1);
     }
 
     public void PlaceTile(Sprite tileSprite,  int x, int y)
@@ -164,7 +159,7 @@ public class TerrainGenerationScript : MonoBehaviour
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
         newTile.name = tileSprite.name;
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-        if (tileSprite != log)
+        if (tileSprite != tileAtlas.log.tileSprite)
         {
             newTile.AddComponent<BoxCollider2D>();
         }
