@@ -6,6 +6,7 @@ public class MovePlayer : MonoBehaviour
 {
     // Vector3 containing change in movement
     private Vector3 dp;
+    private bool isGrounded = false;
 
     // Start is called before the first frame update
     void Start()
@@ -28,19 +29,47 @@ public class MovePlayer : MonoBehaviour
             dp.x += 0.01f;
         }
 
-        // Decrease X velocity if A is pressed by changing change in X
-        if (Input.GetKey("s"))
+
+        // Ground Friction
+        if(!Input.GetKey("a") && !Input.GetKey("d"))
         {
-            dp.y -= 0.01f;
+            if(dp.x < -0.01)
+            {
+                dp.x += 0.008f;
+            }
+            else if(dp.x > 0.01)
+            {
+                dp.x -= 0.008f;
+            }
+            else
+            {
+                dp.x = 0f;
+            }
         }
 
-        // Increase X velocity if D is pressed by changing change in X
-        if (Input.GetKey("w"))
+        // Increase Y velocity if D is pressed by changing change in X
+        if (Input.GetKey("space") && isGrounded)
         {
-            dp.y += 0.01f;
+            dp.y = 10f;
+            isGrounded = false;
         }
+
+        if (isGrounded)
+        {
+            dp.y = 0f;
+        }
+        
 
         // Change player position by change in position (multiply by Time.deltaTime to make frame independent)
         transform.position += dp * Time.deltaTime;
+    }
+
+    void onCollisionEnter2D(Collision col)
+    {
+        Debug.Log("Hello");
+        if(col.gameObject.tag == "Walkable")
+        {
+            isGrounded = true;
+        }
     }
 }
