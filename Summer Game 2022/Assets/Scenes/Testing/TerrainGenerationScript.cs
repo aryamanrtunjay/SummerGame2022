@@ -9,9 +9,10 @@ public class TerrainGenerationScript : MonoBehaviour
     public int chunkSize = 16;
     public float noiseFreq = 0.03f;
     private float seed;
-    public Texture2D noiseTexture;
+    //public Texture2D noiseTexture;
     private GameObject[] worldChunks;
     public List<Vector2> worldTiles = new List<Vector2>();
+    public Texture2D caveNoiseTexture; //black = caves
 
     [Header("Terrain and Cave Settings")]
     public float HeightMultiplier = 50f; //Steepness of terrain
@@ -28,15 +29,60 @@ public class TerrainGenerationScript : MonoBehaviour
     public int MinTreeHeight = 4;
     public int MaxTreeHeight = 7;
 
+    [Header("Ore Settings")]
+    public float coalRarity; //Dont change
+    public float coalVeinSize; // More equals less common
+    public float ironRarity, ironVeinSize;
+    public float goldRarity, goldVeinSize;
+    public float diamondRarity, diamondVeinSize;
+    public Texture2D coalSpread;
+    public Texture2D ironSpread;
+    public Texture2D goldSpread;
+    public Texture2D diamondSpread;
+
+
+
+
+
     [Header("Tile Atlas")]
     public TileAtlas tileAtlas;
 
-  
+    private void OnValidate()
+    {
+        if (caveNoiseTexture == null)
+        {
+            caveNoiseTexture = new Texture2D(worldSize, worldSize);
+            coalSpread = new Texture2D(worldSize, worldSize);
+            ironSpread = new Texture2D(worldSize, worldSize);
+            goldSpread = new Texture2D(worldSize, worldSize);
+            diamondSpread = new Texture2D(worldSize, worldSize);
+        }
+        GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
+        GenerateNoiseTexture(coalRarity, coalVeinSize, coalSpread);
+        GenerateNoiseTexture(ironRarity, ironVeinSize, ironSpread);
+        GenerateNoiseTexture(goldRarity, goldVeinSize, goldSpread);
+        GenerateNoiseTexture(diamondRarity, diamondVeinSize, diamondSpread);
+    }
 
     private void Start()
     {
         seed = Random.Range(-10000, 10000);
-        GenerateNoiseTexture();
+        if (caveNoiseTexture == null)
+        {
+            caveNoiseTexture = new Texture2D(worldSize, worldSize);
+            coalSpread = new Texture2D(worldSize, worldSize);
+            ironSpread = new Texture2D(worldSize, worldSize);
+            goldSpread = new Texture2D(worldSize, worldSize);
+            diamondSpread = new Texture2D(worldSize, worldSize);
+        }
+
+        
+        GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
+        GenerateNoiseTexture(coalRarity,coalVeinSize ,coalSpread);
+        GenerateNoiseTexture(ironRarity,ironVeinSize, ironSpread);
+        GenerateNoiseTexture(goldRarity,goldVeinSize, goldSpread);
+        GenerateNoiseTexture(diamondRarity,diamondVeinSize, diamondSpread);
+
         GenerateChunks();
         GenerateTerrain();
        
@@ -88,7 +134,7 @@ public class TerrainGenerationScript : MonoBehaviour
                     {
                         tileSprite = tileAtlas.dirt.tileSprite;
                     }
-                    if (noiseTexture.GetPixel(x, y).r > CaveChance)
+                    if (caveNoiseTexture.GetPixel(x, y).r > 0.5f)
                     {
                         PlaceTile(tileSprite, x, y);
                     }
@@ -111,21 +157,30 @@ public class TerrainGenerationScript : MonoBehaviour
         }
     }
 
-    public void GenerateNoiseTexture()
+    public void GenerateNoiseTexture(float frequency, float limit, Texture2D noiseTexture)
     {
-        noiseTexture = new Texture2D(worldSize, worldSize);
 
         for (int x = 0; x < noiseTexture.width; x++)
         {
-            for(int y = 0; y < noiseTexture.height; y++)
+            for (int y = 0; y < noiseTexture.height; y++)
             {
-                float v = Mathf.PerlinNoise((x + seed)  * caveFreq, (y + seed) * caveFreq);
-                noiseTexture.SetPixel(x, y, new Color(v,v,v));
+                float v = Mathf.PerlinNoise((x + seed) * frequency, (y + seed) * frequency);
+                if (v > limit)
+                {
+                    noiseTexture.SetPixel(x, y,  Color.white);
+                }
+                else
+                {
+                    noiseTexture.SetPixel(x, y, Color.black);
+                }
             }
         }
 
         noiseTexture.Apply();
+        
     }
+
+    
 
     void GenerateTree(int x, int y)
     {
