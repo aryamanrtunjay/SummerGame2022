@@ -49,7 +49,7 @@ public class TerrainGenerationScript : MonoBehaviour
                     newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
                     newTile.AddComponent<BoxCollider2D>();
                 }
-                else if (y < BedRockLayerHeight)
+                else if (y < BedRockLayerHeight + Random.Range(-1,2))
                 {
                     tileSprite = bedRock;
                     GameObject newTile = new GameObject();
