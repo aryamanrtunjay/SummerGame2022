@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
-    [Header("World Settings")]
+    [Header("World Settings (world size must be divisible by chunk size)")]
     public int worldSize = 320;
     public int chunkSize = 16;
     public float noiseFreq = 0.03f;
@@ -21,11 +21,12 @@ public class TerrainGenerationScript : MonoBehaviour
     public float TerrainFreq = 0.02f; //Freq of terrain changes (greater = changes more often)
     public float CaveChance = 0.4f; //How dark/light a spot needs to be to become a cave (derived from perlin noise texture) (More = more caves)
 
-    [Header("Dirt, Grass, and Stone Settings")]
+    [Header("Dirt, Grass, Stone, Tree, and Tall Grass Settings")]
     public int dirtlayerDepth = 5;
     public int BedRockLayerHeight = 5;
     public int DirtandStoneSeperationDistance = 5;
     public int TreeProbability = 10; // probability of tree spawning on a block (1/var = probability)
+    public int TallGrassProbability = 5;
     public int MinTreeHeight = 4;
     public int MaxTreeHeight = 7;
 
@@ -107,6 +108,7 @@ public class TerrainGenerationScript : MonoBehaviour
         for (int x = 0; x < worldSize; x++)
         {
             float height = Mathf.PerlinNoise((x + seed) * TerrainFreq, seed * TerrainFreq) * HeightMultiplier + HeightAddition;
+            Debug.Log(height);
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite = tileAtlas.dirt.tileSprite;
@@ -118,6 +120,16 @@ public class TerrainGenerationScript : MonoBehaviour
                     if (t == 1)
                     {
                         GenerateTree(x, y + 1);
+                    }
+                    else
+                    {
+                        // Generates Tall Grass
+                        int g = Random.Range(0, TallGrassProbability);
+                        if (g == 1)
+                        {
+                            tileSprite = tileAtlas.tallgrass.tileSprite;
+                            PlaceTile(tileSprite, x, y + 1);    
+                        }
                     }
                 }
                 else if (y < BedRockLayerHeight + Random.Range(-1,2)) //Generates Bedrock
@@ -240,6 +252,7 @@ public class TerrainGenerationScript : MonoBehaviour
         PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight + 1);
     }
 
+
     public void PlaceTile(Sprite tileSprite,  int x, int y)
     {
         GameObject newTile = new GameObject();
@@ -252,7 +265,7 @@ public class TerrainGenerationScript : MonoBehaviour
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
         newTile.name = tileSprite.name;
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-        if (tileSprite != tileAtlas.log.tileSprite)
+        if (tileSprite != tileAtlas.log.tileSprite && tileSprite != tileAtlas.tallgrass.tileSprite)
         {
             newTile.AddComponent<BoxCollider2D>();
         }

@@ -18,6 +18,7 @@ MonoBehaviour:
   bedRock: {fileID: 11400000, guid: 81ecd3e7b3c1d7c499754c8bf36c1254, type: 2}
   log: {fileID: 11400000, guid: 3157b4269f3014b4baac28aa5cf6954a, type: 2}
   leaf: {fileID: 11400000, guid: 66b09e8391a2d8048b41b3c94f19afc3, type: 2}
+  tallgrass: {fileID: 11400000, guid: 6f0bbf888974a0e4caddfc380ddf606f, type: 2}
   coal: {fileID: 11400000, guid: 001c2271efa8bbf44a2d3b9e73765182, type: 2}
   iron: {fileID: 11400000, guid: 59a64a14533d6e943914d02d8a12ef3a, type: 2}
   gold: {fileID: 11400000, guid: 956e6b733b2b1fc448449dc46fba66fe, type: 2}
