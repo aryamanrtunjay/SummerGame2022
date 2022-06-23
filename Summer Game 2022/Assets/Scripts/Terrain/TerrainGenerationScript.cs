@@ -1,33 +1,104 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
-    public int worldSize = 200;
+    [Header("World Settings")]
+    public int worldSize = 320;
+    public int chunkSize = 16;
     public float noiseFreq = 0.03f;
     private float seed;
-    public Texture2D noiseTexture;
+    //public Texture2D noiseTexture;
+    private GameObject[] worldChunks;
+    public List<Vector2> worldTiles = new List<Vector2>();
+    public Texture2D caveNoiseTexture; //black = caves
 
+    [Header("Terrain and Cave Settings")]
     public float HeightMultiplier = 50f; //Steepness of terrain
     public float HeightAddition = 200; //Overall Height of terrain
     public float caveFreq = 0.05f; //Freq of caves (higher = more caves) (Used when making perlin texture; If higher, the noise in that area is more so more likely to make a cave)
     public float TerrainFreq = 0.02f; //Freq of terrain changes (greater = changes more often)
     public float CaveChance = 0.4f; //How dark/light a spot needs to be to become a cave (derived from perlin noise texture) (More = more caves)
 
-    public int dirtlayerDepth = 7;
+    [Header("Dirt, Grass, and Stone Settings")]
+    public int dirtlayerDepth = 5;
     public int BedRockLayerHeight = 5;
     public int DirtandStoneSeperationDistance = 5;
-    public Sprite grass;
-    public Sprite dirt;
-    public Sprite stone;
-    public Sprite bedRock;
+    public int TreeProbability = 10; // probability of tree spawning on a block (1/var = probability)
+    public int MinTreeHeight = 4;
+    public int MaxTreeHeight = 7;
+
+    [Header("Ore Settings")]
+    public float coalRarity; //Dont change
+    public float coalVeinSize; // More equals less common
+    public float ironRarity, ironVeinSize;
+    public float goldRarity, goldVeinSize;
+    public float diamondRarity, diamondVeinSize;
+    public Texture2D coalSpread;
+    public Texture2D ironSpread;
+    public Texture2D goldSpread;
+    public Texture2D diamondSpread;
+
+
+
+
+
+    [Header("Tile Atlas")]
+    public TileAtlas tileAtlas;
+
+    private void OnValidate()
+    {
+        if (caveNoiseTexture == null)
+        {
+            caveNoiseTexture = new Texture2D(worldSize, worldSize);
+            coalSpread = new Texture2D(worldSize, worldSize);
+            ironSpread = new Texture2D(worldSize, worldSize);
+            goldSpread = new Texture2D(worldSize, worldSize);
+            diamondSpread = new Texture2D(worldSize, worldSize);
+        }
+        GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
+        GenerateNoiseTexture(coalRarity, coalVeinSize, coalSpread);
+        GenerateNoiseTexture(ironRarity, ironVeinSize, ironSpread);
+        GenerateNoiseTexture(goldRarity, goldVeinSize, goldSpread);
+        GenerateNoiseTexture(diamondRarity, diamondVeinSize, diamondSpread);
+    }
 
     private void Start()
     {
         seed = Random.Range(-10000, 10000);
-        GenerateNoiseTexture();
+        if (caveNoiseTexture == null)
+        {
+            caveNoiseTexture = new Texture2D(worldSize, worldSize);
+            coalSpread = new Texture2D(worldSize, worldSize);
+            ironSpread = new Texture2D(worldSize, worldSize);
+            goldSpread = new Texture2D(worldSize, worldSize);
+            diamondSpread = new Texture2D(worldSize, worldSize);
+        }
+
+        
+        GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
+        GenerateNoiseTexture(coalRarity,coalVeinSize ,coalSpread);
+        GenerateNoiseTexture(ironRarity,ironVeinSize, ironSpread);
+        GenerateNoiseTexture(goldRarity,goldVeinSize, goldSpread);
+        GenerateNoiseTexture(diamondRarity,diamondVeinSize, diamondSpread);
+
+        GenerateChunks();
         GenerateTerrain();
        
+    }
+
+    public void GenerateChunks()
+    {
+        int numOfChunks = worldSize / chunkSize;
+        worldChunks = new GameObject[numOfChunks];
+        for (int i = 0; i < numOfChunks; i++)
+        {
+            GameObject newChunk = new GameObject();
+            newChunk.name = i.ToString();
+            newChunk.transform.parent = this.transform;
+            worldChunks[i] = newChunk;
+        }
     }
 
     public void GenerateTerrain()
@@ -40,25 +111,30 @@ public class TerrainGenerationScript : MonoBehaviour
                 Sprite tileSprite;
                 if (y >= height-2) //Generates grass
                 {
-                    tileSprite = grass;
+                    tileSprite = tileAtlas.grass.tileSprite;
                     PlaceTile(tileSprite, x, y);
+                    int t = Random.Range(0, TreeProbability);
+                    if (t == 1)
+                    {
+                        GenerateTree(x, y + 1);
+                    }
                 }
                 else if (y < BedRockLayerHeight + Random.Range(-1,2)) //Generates Bedrock
                 {
-                    tileSprite = bedRock;
+                    tileSprite = tileAtlas.bedRock.tileSprite;
                     PlaceTile(tileSprite, x, y);
                 }
                 else
                 {
                     if (y < height - dirtlayerDepth)
                     {
-                        tileSprite = stone;
+                        tileSprite = tileAtlas.stone.tileSprite;
                     }
                     else
                     {
-                        tileSprite = dirt;
+                        tileSprite = tileAtlas.dirt.tileSprite;
                     }
-                    if (noiseTexture.GetPixel(x, y).r > CaveChance)
+                    if (caveNoiseTexture.GetPixel(x, y).r > 0.5f)
                     {
                         PlaceTile(tileSprite, x, y);
                     }
@@ -66,12 +142,12 @@ public class TerrainGenerationScript : MonoBehaviour
                     {
                         if (y > height - dirtlayerDepth) //Generates dirt
                         {
-                            tileSprite = dirt;
+                            tileSprite = tileAtlas.dirt.tileSprite;
                             PlaceTile(tileSprite, x, y);
                         }
                         if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance ) //Ensures there is always stone between dirt and caves
                         {
-                            tileSprite = stone;
+                            tileSprite = tileAtlas.stone.tileSprite;
                             PlaceTile(tileSprite, x, y);
                         }
                     }
@@ -81,31 +157,69 @@ public class TerrainGenerationScript : MonoBehaviour
         }
     }
 
-    public void GenerateNoiseTexture()
+    public void GenerateNoiseTexture(float frequency, float limit, Texture2D noiseTexture)
     {
-        noiseTexture = new Texture2D(worldSize, worldSize);
 
         for (int x = 0; x < noiseTexture.width; x++)
         {
-            for(int y = 0; y < noiseTexture.height; y++)
+            for (int y = 0; y < noiseTexture.height; y++)
             {
-                float v = Mathf.PerlinNoise((x + seed)  * caveFreq, (y + seed) * caveFreq);
-                noiseTexture.SetPixel(x, y, new Color(v,v,v));
+                float v = Mathf.PerlinNoise((x + seed) * frequency, (y + seed) * frequency);
+                if (v > limit)
+                {
+                    noiseTexture.SetPixel(x, y,  Color.white);
+                }
+                else
+                {
+                    noiseTexture.SetPixel(x, y, Color.black);
+                }
             }
         }
 
         noiseTexture.Apply();
+        
     }
 
-    public void PlaceTile(Sprite tileSprite, float x, float y)
+    
+
+    void GenerateTree(int x, int y)
+    {
+        int TreeHeight = Random.Range(MinTreeHeight, MaxTreeHeight);
+        for (int i = 0; i < TreeHeight; i++)
+        {
+            PlaceTile(tileAtlas.log.tileSprite, x, y+i);
+        }
+
+        //Leaves
+        PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight);
+        PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight + 1);
+        PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight + 2);
+
+        PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight );
+        PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight + 1);
+
+        PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight);
+        PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight + 1);
+    }
+
+    public void PlaceTile(Sprite tileSprite,  int x, int y)
     {
         GameObject newTile = new GameObject();
-        newTile.transform.parent = this.transform;
+
+
+        float chunkCoord = (Mathf.Round(x / chunkSize) * chunkSize)/chunkSize;
+        newTile.transform.parent = worldChunks[(int)chunkCoord].transform;
+
         newTile.AddComponent<SpriteRenderer>();
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
         newTile.name = tileSprite.name;
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-        newTile.AddComponent<BoxCollider2D>();
+        if (tileSprite != tileAtlas.log.tileSprite)
+        {
+            newTile.AddComponent<BoxCollider2D>();
+        }
+
+        worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
     }
 }
 
