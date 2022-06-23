@@ -112,7 +112,7 @@ public class TerrainGenerationScript : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite = tileAtlas.stone.tileSprite;//Temp fix
-                if (y >= height-2) //Generates grass
+                if (y >= height-1) //Generates grass
                 {
                     tileSprite = tileAtlas.grass.tileSprite;
                     PlaceTile(tileSprite, x, y);
@@ -142,16 +142,17 @@ public class TerrainGenerationScript : MonoBehaviour
                     if (y < height - dirtlayerDepth)
                     {
 
-                        if (coalSpread.GetPixel(x,y).r > 0.5f)
+                        
+                        if (ironSpread.GetPixel(x, y).r > 0.5f)
                         {
-                            tileSprite = tileAtlas.coal.tileSprite;
-                        }
-                        else if (ironSpread.GetPixel(x, y).r > 0.5f)
-                        {
-                            if (y >= height * 0.4 && y <= height * 0.8)
+                            if (y >= height * 0.4 && y <= height * 0.7)
                             {
                                 tileSprite = tileAtlas.iron.tileSprite;
                             }
+                        }
+                        else if (coalSpread.GetPixel(x, y).r > 0.5f)
+                        {
+                            tileSprite = tileAtlas.coal.tileSprite;
                         }
                         else if (goldSpread.GetPixel(x, y).r > 0.5f)
                         {
