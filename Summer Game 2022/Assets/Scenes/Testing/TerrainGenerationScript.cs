@@ -111,7 +111,7 @@ public class TerrainGenerationScript : MonoBehaviour
             Debug.Log(height);
             for (int y = 0; y < height; y++)
             {
-                Sprite tileSprite = tileAtlas.dirt.tileSprite;
+                Sprite tileSprite = tileAtlas.stone.tileSprite;//Temp fix
                 if (y >= height-2) //Generates grass
                 {
                     tileSprite = tileAtlas.grass.tileSprite;
