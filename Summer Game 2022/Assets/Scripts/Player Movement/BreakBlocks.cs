@@ -6,6 +6,7 @@ public class BreakBlocks : MonoBehaviour
 {
     public TerrainGenerationScript blocks;
     public float zOffSet = 20f;
+    public float reach = 5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,8 +21,15 @@ public class BreakBlocks : MonoBehaviour
             var mousePos = Input.mousePosition;
             mousePos.z += zOffSet;
             Vector3 direction = Camera.main.ScreenToWorldPoint(mousePos) - transform.position;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
-            if (hit.collider != null)
+
+            float distance = Vector2.Distance(Camera.main.ScreenToWorldPoint(mousePos), transform.position);
+            if(distance > reach)
+            {
+                distance = reach;
+            }
+
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, distance);
+            if (hit.collider != null && hit.collider.name != "BedRock")
             {
                 Destroy(hit.collider.gameObject);
             }
