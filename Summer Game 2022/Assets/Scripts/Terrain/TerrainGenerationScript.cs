@@ -86,8 +86,7 @@ public class TerrainGenerationScript : MonoBehaviour
         GenerateNoiseTexture(diamondRarity,diamondVeinSize, diamondSpread);
 
         GenerateChunks();
-        GenerateTerrain();
-       
+        GenerateTerrain();     
     }
 
     public void GenerateChunks()
@@ -108,7 +107,7 @@ public class TerrainGenerationScript : MonoBehaviour
         for (int x = 0; x < worldSize; x++)
         {
             float height = Mathf.PerlinNoise((x + seed) * TerrainFreq, seed * TerrainFreq) * HeightMultiplier + HeightAddition;
-            Debug.Log(height);
+            
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite = tileAtlas.stone.tileSprite;//Temp fix
@@ -177,7 +176,6 @@ public class TerrainGenerationScript : MonoBehaviour
                     else
                     {
                         tileSprite = tileAtlas.dirt.tileSprite;
-                        Debug.Log(tileAtlas.grass.tileSprite == tileAtlas.leaf.tileSprite);
                     }
                     if (caveNoiseTexture.GetPixel(x, y).r > 0.5f)
                     {
@@ -258,7 +256,6 @@ public class TerrainGenerationScript : MonoBehaviour
     public void PlaceTile(Sprite tileSprite,  int x, int y)
     {
         GameObject newTile = new GameObject();
-
 
         float chunkCoord = (Mathf.Round(x / chunkSize) * chunkSize)/chunkSize;
         newTile.transform.parent = worldChunks[(int)chunkCoord].transform;

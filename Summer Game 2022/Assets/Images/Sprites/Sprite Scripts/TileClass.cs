@@ -8,4 +8,6 @@ public class TileClass : ScriptableObject
     public string tileName;
     public Sprite tileSprite;
     public float LightValue;
+    public float xPos;
+    public float yPos;
 }
