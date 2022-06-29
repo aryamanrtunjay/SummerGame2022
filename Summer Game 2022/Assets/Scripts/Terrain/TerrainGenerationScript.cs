@@ -177,6 +177,7 @@ public class TerrainGenerationScript : MonoBehaviour
                     else
                     {
                         tileSprite = tileAtlas.dirt.tileSprite;
+                        Debug.Log(tileAtlas.grass.tileSprite == tileAtlas.leaf.tileSprite);
                     }
                     if (caveNoiseTexture.GetPixel(x, y).r > 0.5f)
                     {
@@ -266,7 +267,7 @@ public class TerrainGenerationScript : MonoBehaviour
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
         newTile.name = tileSprite.name;
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
-        if (tileSprite != tileAtlas.log.tileSprite && tileSprite != tileAtlas.tallgrass.tileSprite)
+        if (tileSprite != tileAtlas.log.tileSprite && tileSprite != tileAtlas.tallgrass.tileSprite && tileSprite != tileAtlas.leaf.tileSprite)
         {
             newTile.AddComponent<BoxCollider2D>();
         }

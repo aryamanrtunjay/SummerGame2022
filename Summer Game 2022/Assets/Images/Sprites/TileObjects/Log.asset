@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Log
   m_EditorClassIdentifier: 
   tileName: Log
-  tileSprite: {fileID: 21300000, guid: ef349ee09cb3bce4daf3c6bfd15d28d9, type: 3}
-  rarity: 0
+  tileSprite: {fileID: 21300000, guid: 8b5aabab41dc8314aba3d133b8455f5e, type: 3}
+  LightValue: 0

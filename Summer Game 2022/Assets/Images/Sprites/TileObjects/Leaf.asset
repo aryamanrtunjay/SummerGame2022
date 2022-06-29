@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Leaf
   m_EditorClassIdentifier: 
   tileName: Leaf
-  tileSprite: {fileID: 21300000, guid: a50715ef296797540af22726fc393a8e, type: 3}
-  rarity: 0
+  tileSprite: {fileID: 21300000, guid: 927030b32f93e9c4391dec271e9581fc, type: 3}
+  LightValue: 0
