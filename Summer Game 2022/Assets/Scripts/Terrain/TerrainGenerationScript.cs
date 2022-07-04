@@ -95,33 +95,23 @@ public class TerrainGenerationScript : MonoBehaviour
         GenerateChunks();
         GenerateTerrain();
 
-        /*foreach (var Item in worldTiles)
-        {
-            if (Item != null)
-            {
-                Debug.Log(Item.transform.position.x);
-                Debug.Log(Item.transform.position.y);
-                Debug.Log("");
-            }
-        }*/
+        
 
         
     }
 
     void Update()
     {
+        //Updating time and player coords
         seconds += Time.deltaTime;
         PlayerPosition[0] = Mathf.Round(location.x - 0.5f);
         PlayerPosition[1] = Mathf.Round(location.y - 0.5f);
-        /*Debug.Log(PlayerPosition[0]);
-        Debug.Log(PlayerPosition[1]);*/
-
         float CurrentPlayerX = PlayerPosition[0];
         float CurrentPlayerY = PlayerPosition[1];
 
-        if (seconds > 5)
+        if (CurrentPlayerX >= 0 && CurrentPlayerX < worldSize && CurrentPlayerY >= 0 && CurrentPlayerY < worldSize)
         {
-            Debug.Log(worldTiles[(int)CurrentPlayerX, (int)CurrentPlayerY-1]);
+            Debug.Log(CheckNextTile("d", (int)CurrentPlayerX, (int)CurrentPlayerY));
         }
     }
 
@@ -309,6 +299,32 @@ public class TerrainGenerationScript : MonoBehaviour
 
         
         worldTiles[x,y] = newTile;
+    }
+
+    public GameObject CheckNextTile (string Direction, int CurrentTileX, int CurrentTileY)
+    {
+        GameObject newCheckedTile = new GameObject();
+        if (Direction == "r")
+        {
+            newCheckedTile = worldTiles[CurrentTileX + 1, CurrentTileY];
+        }
+        else if (Direction == "l")
+        {
+            newCheckedTile = worldTiles[CurrentTileX - 1, CurrentTileY];
+        }
+        else if (Direction == "u")
+        {
+            newCheckedTile = worldTiles[CurrentTileX, CurrentTileY + 1];
+        }
+        else if (Direction == "d")
+        {
+            newCheckedTile = worldTiles[CurrentTileX, CurrentTileY - 1];
+        }
+        else
+        {
+            Debug.Log("Invalid Direction : Function CheckNextTile");
+        }
+        return newCheckedTile;
     }
 }
 
