@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
+
+    private float seconds = 0;
+
     [Header("World Settings (world size must be divisible by chunk size)")]
     public int worldSize = 320;
     public int chunkSize = 16;
     public float noiseFreq = 0.03f;
     private float seed;
-    //public Texture2D noiseTexture;
+    
     private GameObject[] worldChunks;
-    //public List<GameObject> worldTiles = new List<GameObject>();
+    
     public GameObject[,] worldTiles;
     public Texture2D caveNoiseTexture; //black = caves
 
@@ -41,10 +44,10 @@ public class TerrainGenerationScript : MonoBehaviour
     public Texture2D ironSpread;
     public Texture2D goldSpread;
     public Texture2D diamondSpread;
-   
 
 
-
+    [Header("Player Vars")]
+    public List<float> PlayerPosition = new List<float>();
 
 
     [Header("Tile Atlas")]
@@ -69,6 +72,8 @@ public class TerrainGenerationScript : MonoBehaviour
 
     private void Start()
     {
+        PlayerPosition.Add(location.x);
+        PlayerPosition.Add(location.y);
         worldTiles = new GameObject[worldSize, worldSize];
         seed = Random.Range(-10000, 10000);
         if (caveNoiseTexture == null)
@@ -105,7 +110,19 @@ public class TerrainGenerationScript : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(worldTiles[10,10]);
+        seconds += Time.deltaTime;
+        PlayerPosition[0] = Mathf.Round(location.x - 0.5f);
+        PlayerPosition[1] = Mathf.Round(location.y - 0.5f);
+        /*Debug.Log(PlayerPosition[0]);
+        Debug.Log(PlayerPosition[1]);*/
+
+        float CurrentPlayerX = PlayerPosition[0];
+        float CurrentPlayerY = PlayerPosition[1];
+
+        if (seconds > 5)
+        {
+            Debug.Log(worldTiles[(int)CurrentPlayerX, (int)CurrentPlayerY-1]);
+        }
     }
 
     public Location location;
