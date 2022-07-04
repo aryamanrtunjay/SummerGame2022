@@ -11,7 +11,7 @@ public class TerrainGenerationScript : MonoBehaviour
     private float seed;
     //public Texture2D noiseTexture;
     private GameObject[] worldChunks;
-    public List<Vector2> worldTiles = new List<Vector2>();
+    public List<GameObject> worldTiles = new List<GameObject>();
     public Texture2D caveNoiseTexture; //black = caves
 
     [Header("Terrain and Cave Settings")]
@@ -86,8 +86,20 @@ public class TerrainGenerationScript : MonoBehaviour
         GenerateNoiseTexture(diamondRarity,diamondVeinSize, diamondSpread);
 
         GenerateChunks();
-        GenerateTerrain();     
+        GenerateTerrain();
+
+        foreach (var Item in worldTiles)
+        {
+            Debug.Log(Item);
+        }
     }
+
+    void Update()
+    {
+        
+    }
+
+    public Location location;
 
     public void GenerateChunks()
     {
@@ -269,7 +281,8 @@ public class TerrainGenerationScript : MonoBehaviour
             newTile.AddComponent<BoxCollider2D>();
         }
 
-        worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
+        newTile.transform.position -= (Vector3.one * 0.5f);
+        worldTiles.Add(newTile);
     }
 }
 
