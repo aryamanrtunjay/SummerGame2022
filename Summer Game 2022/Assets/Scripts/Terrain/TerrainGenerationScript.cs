@@ -131,7 +131,7 @@ public class TerrainGenerationScript : MonoBehaviour
     {
         for (int i = 0; i < worldChunks.Length; i++)
         {
-            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > 100)
+            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > Camera.fieldOfView + 15)
             {
                 worldChunks[i].SetActive(false);
             }
@@ -147,6 +147,9 @@ public class TerrainGenerationScript : MonoBehaviour
 
     void Update()
     {
+
+        Debug.Log(Camera.fieldOfView);
+
         //Updating time and player coords
         seconds += Time.deltaTime;
         PlayerPosition[0] = Mathf.Round(location.x - 0.5f);
