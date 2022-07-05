@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
+    public Location location;
+    public Camera Camera;
+    public SpawnPoint SpawnPoint;
+    
 
     private float seconds = 0;
 
@@ -48,6 +52,8 @@ public class TerrainGenerationScript : MonoBehaviour
 
     [Header("Player Vars")]
     public List<float> PlayerPosition = new List<float>();
+    int PlayerStartX;
+    int PlayerStartY;
 
 
     [Header("Tile Atlas")]
@@ -72,8 +78,6 @@ public class TerrainGenerationScript : MonoBehaviour
 
     private void Start()
     {
-        PlayerPosition.Add(location.x);
-        PlayerPosition.Add(location.y);
         worldTiles = new GameObject[worldSize, worldSize];
         seed = Random.Range(-10000, 10000);
         if (caveNoiseTexture == null)
@@ -94,11 +98,37 @@ public class TerrainGenerationScript : MonoBehaviour
 
         GenerateChunks();
         GenerateTerrain();
-
+        RefreshChunks();
         
+        PlayerStartX = (int)Mathf.Round(worldSize/2);
+        // PlayerStartY = worldSize;
+        for (int i = worldSize-1; i >= 0; i--){
+            if (worldTiles[PlayerStartX-1,i] != null){
+                PlayerStartY = (int)worldTiles[PlayerStartX-1,i].transform.position.y + 3;
+                i = -1;
+            }
+        }
+        SpawnPoint.spawn.x = PlayerStartX;
+        SpawnPoint.spawn.y = PlayerStartY;
+        PlayerPosition.Add(location.x);
+        PlayerPosition.Add(location.y);
 
         
     }
+
+    void RefreshChunks(){
+        for (int i = 0; i < worldChunks.Length; i++){
+            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize/2), 0), new Vector2(location.x, 0)) > 100){
+                worldChunks[i].SetActive(false);
+            }
+            else{
+                worldChunks[i].SetActive(true);
+            }
+        }
+    }
+        
+    
+
 
     void Update()
     {
@@ -113,9 +143,11 @@ public class TerrainGenerationScript : MonoBehaviour
         {
             Debug.Log(CheckNextTile("d", (int)CurrentPlayerX, (int)CurrentPlayerY));
         }
+
+        RefreshChunks();
     }
 
-    public Location location;
+    
 
     public void GenerateChunks()
     {
@@ -306,19 +338,39 @@ public class TerrainGenerationScript : MonoBehaviour
         GameObject newCheckedTile = new GameObject();
         if (Direction == "r")
         {
+            if (CurrentTileX == worldSize-1){
+                newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
+            }
+            else{
             newCheckedTile = worldTiles[CurrentTileX + 1, CurrentTileY];
+            }
         }
         else if (Direction == "l")
         {
+            if (CurrentTileX == 0){
+                newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
+            }
+            else{
             newCheckedTile = worldTiles[CurrentTileX - 1, CurrentTileY];
+            }
         }
         else if (Direction == "u")
         {
+            if (CurrentTileY == worldSize-1){
+                newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
+            }
+            else{
             newCheckedTile = worldTiles[CurrentTileX, CurrentTileY + 1];
+            }
         }
         else if (Direction == "d")
         {
-            newCheckedTile = worldTiles[CurrentTileX, CurrentTileY - 1];
+            if (CurrentTileY == 0){
+                newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
+            }
+            else{
+                newCheckedTile = worldTiles[CurrentTileX, CurrentTileY - 1];
+            }
         }
         else
         {
