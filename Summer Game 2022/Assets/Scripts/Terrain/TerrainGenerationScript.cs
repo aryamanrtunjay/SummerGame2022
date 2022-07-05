@@ -11,6 +11,13 @@ public class TerrainGenerationScript : MonoBehaviour
 
     private float seconds = 0;
 
+    [Header("Lighting")]
+    public Texture2D worldTilesMap;
+    public Material lightShader;
+    public float lightThreshold;
+    public float lightRadius = 7f;
+    List<Vector2Int> unlitBlocks = new List<Vector2Int>();
+
     [Header("World Settings (world size must be divisible by chunk size)")]
     public int worldSize = 320;
     public int chunkSize = 16;
@@ -78,6 +85,20 @@ public class TerrainGenerationScript : MonoBehaviour
 
     private void Start()
     {
+        //Initialize Lighting
+        worldTilesMap = new Texture2D(worldSize, worldSize);
+        worldTilesMap.filterMode = FilterMode.Point; //Coment for smooth lighting
+        lightShader.SetTexture("_ShadowTex", worldTilesMap);
+
+        for (int x = 0; x < worldSize; x ++){
+            for (int y = 0; y < worldSize; y++){
+                worldTilesMap.SetPixel(x,y,Color.white);
+            }
+        }
+        worldTilesMap.Apply();
+
+
+        //Generate Terain
         worldTiles = new GameObject[worldSize, worldSize];
         seed = Random.Range(-10000, 10000);
         if (caveNoiseTexture == null)
@@ -98,6 +119,15 @@ public class TerrainGenerationScript : MonoBehaviour
 
         GenerateChunks();
         GenerateTerrain();
+
+        for (int x = 0; x < worldSize; x++){
+            for ( int y = 0; y < worldSize; y++){
+                if (worldTilesMap.GetPixel(x,y) == Color.white){
+                    LightBlock(x,y,1f,0);
+                }
+            }
+        }
+
         RefreshChunks();
         
         PlayerStartX = (int)Mathf.Round(worldSize/2);
@@ -265,6 +295,7 @@ public class TerrainGenerationScript : MonoBehaviour
                     
             }
         }
+        worldTilesMap.Apply();
     }
 
     public void GenerateNoiseTexture(float frequency, float limit, Texture2D noiseTexture)
