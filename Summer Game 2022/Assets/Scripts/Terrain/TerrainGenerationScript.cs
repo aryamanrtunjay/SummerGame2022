@@ -7,25 +7,20 @@ public class TerrainGenerationScript : MonoBehaviour
     public Location location;
     public Camera Camera;
     public SpawnPoint SpawnPoint;
-    
+
 
     private float seconds = 0;
 
-    [Header("Lighting")]
-    public Texture2D worldTilesMap;
-    public Material lightShader;
-    public float lightThreshold;
-    public float lightRadius = 7f;
-    List<Vector2Int> unlitBlocks = new List<Vector2Int>();
+
 
     [Header("World Settings (world size must be divisible by chunk size)")]
     public int worldSize = 320;
     public int chunkSize = 16;
     public float noiseFreq = 0.03f;
     private float seed;
-    
+
     private GameObject[] worldChunks;
-    
+
     public GameObject[,] worldTiles;
     public Texture2D caveNoiseTexture; //black = caves
 
@@ -85,17 +80,7 @@ public class TerrainGenerationScript : MonoBehaviour
 
     private void Start()
     {
-        //Initialize Lighting
-        worldTilesMap = new Texture2D(worldSize, worldSize);
-        worldTilesMap.filterMode = FilterMode.Point; //Coment for smooth lighting
-        lightShader.SetTexture("_ShadowTex", worldTilesMap);
 
-        for (int x = 0; x < worldSize; x ++){
-            for (int y = 0; y < worldSize; y++){
-                worldTilesMap.SetPixel(x,y,Color.white);
-            }
-        }
-        worldTilesMap.Apply();
 
 
         //Generate Terain
@@ -110,31 +95,27 @@ public class TerrainGenerationScript : MonoBehaviour
             diamondSpread = new Texture2D(worldSize, worldSize);
         }
 
-        
+
         GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
-        GenerateNoiseTexture(coalRarity,coalVeinSize ,coalSpread);
-        GenerateNoiseTexture(ironRarity,ironVeinSize, ironSpread);
-        GenerateNoiseTexture(goldRarity,goldVeinSize, goldSpread);
-        GenerateNoiseTexture(diamondRarity,diamondVeinSize, diamondSpread);
+        GenerateNoiseTexture(coalRarity, coalVeinSize, coalSpread);
+        GenerateNoiseTexture(ironRarity, ironVeinSize, ironSpread);
+        GenerateNoiseTexture(goldRarity, goldVeinSize, goldSpread);
+        GenerateNoiseTexture(diamondRarity, diamondVeinSize, diamondSpread);
 
         GenerateChunks();
         GenerateTerrain();
 
-        for (int x = 0; x < worldSize; x++){
-            for ( int y = 0; y < worldSize; y++){
-                if (worldTilesMap.GetPixel(x,y) == Color.white){
-                    LightBlock(x,y,1f,0);
-                }
-            }
-        }
+
 
         RefreshChunks();
-        
-        PlayerStartX = (int)Mathf.Round(worldSize/2);
+
+        PlayerStartX = (int)Mathf.Round(worldSize / 2);
         // PlayerStartY = worldSize;
-        for (int i = worldSize-1; i >= 0; i--){
-            if (worldTiles[PlayerStartX-1,i] != null){
-                PlayerStartY = (int)worldTiles[PlayerStartX-1,i].transform.position.y + 3;
+        for (int i = worldSize - 1; i >= 0; i--)
+        {
+            if (worldTiles[PlayerStartX - 1, i] != null)
+            {
+                PlayerStartY = (int)worldTiles[PlayerStartX - 1, i].transform.position.y + 3;
                 i = -1;
             }
         }
@@ -143,21 +124,25 @@ public class TerrainGenerationScript : MonoBehaviour
         PlayerPosition.Add(location.x);
         PlayerPosition.Add(location.y);
 
-        
+
     }
 
-    void RefreshChunks(){
-        for (int i = 0; i < worldChunks.Length; i++){
-            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize/2), 0), new Vector2(location.x, 0)) > 100){
+    void RefreshChunks()
+    {
+        for (int i = 0; i < worldChunks.Length; i++)
+        {
+            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > 100)
+            {
                 worldChunks[i].SetActive(false);
             }
-            else{
+            else
+            {
                 worldChunks[i].SetActive(true);
             }
         }
     }
-        
-    
+
+
 
 
     void Update()
@@ -177,7 +162,7 @@ public class TerrainGenerationScript : MonoBehaviour
         RefreshChunks();
     }
 
-    
+
 
     public void GenerateChunks()
     {
@@ -197,11 +182,11 @@ public class TerrainGenerationScript : MonoBehaviour
         for (int x = 0; x < worldSize; x++)
         {
             float height = Mathf.PerlinNoise((x + seed) * TerrainFreq, seed * TerrainFreq) * HeightMultiplier + HeightAddition;
-            
+
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite = tileAtlas.stone.tileSprite;//Temp fix
-                if (y >= height-1) //Generates grass
+                if (y >= height - 1) //Generates grass
                 {
                     tileSprite = tileAtlas.grass.tileSprite;
                     PlaceTile(tileSprite, x, y);
@@ -217,11 +202,11 @@ public class TerrainGenerationScript : MonoBehaviour
                         if (g == 1)
                         {
                             tileSprite = tileAtlas.tallgrass.tileSprite;
-                            PlaceTile(tileSprite, x, y + 1);    
+                            PlaceTile(tileSprite, x, y + 1);
                         }
                     }
                 }
-                else if (y < BedRockLayerHeight + Random.Range(-1,2)) //Generates Bedrock
+                else if (y < BedRockLayerHeight + Random.Range(-1, 2)) //Generates Bedrock
                 {
                     tileSprite = tileAtlas.bedRock.tileSprite;
                     PlaceTile(tileSprite, x, y);
@@ -231,7 +216,7 @@ public class TerrainGenerationScript : MonoBehaviour
                     if (y < height - dirtlayerDepth)
                     {
 
-                        
+
                         if (ironSpread.GetPixel(x, y).r > 0.5f)
                         {
                             if (y >= height * 0.4 && y <= height * 0.7)
@@ -261,7 +246,7 @@ public class TerrainGenerationScript : MonoBehaviour
                         {
                             tileSprite = tileAtlas.stone.tileSprite;
                         }
-                        
+
                     }
                     else
                     {
@@ -278,7 +263,7 @@ public class TerrainGenerationScript : MonoBehaviour
                             tileSprite = tileAtlas.dirt.tileSprite;
                             PlaceTile(tileSprite, x, y);
                         }
-                        if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance ) //Ensures there is always stone between dirt and caves
+                        if (y < height - dirtlayerDepth && y > height - dirtlayerDepth - DirtandStoneSeperationDistance) //Ensures there is always stone between dirt and caves
                         {
                             if (coalSpread.GetPixel(x, y).r > 0.5f)
                             {
@@ -292,10 +277,10 @@ public class TerrainGenerationScript : MonoBehaviour
                         }
                     }
                 }
-                    
+
             }
         }
-        worldTilesMap.Apply();
+
     }
 
     public void GenerateNoiseTexture(float frequency, float limit, Texture2D noiseTexture)
@@ -308,7 +293,7 @@ public class TerrainGenerationScript : MonoBehaviour
                 float v = Mathf.PerlinNoise((x + seed) * frequency, (y + seed) * frequency);
                 if (v > limit)
                 {
-                    noiseTexture.SetPixel(x, y,  Color.white);
+                    noiseTexture.SetPixel(x, y, Color.white);
                 }
                 else
                 {
@@ -318,17 +303,17 @@ public class TerrainGenerationScript : MonoBehaviour
         }
 
         noiseTexture.Apply();
-        
+
     }
 
-    
+
 
     void GenerateTree(int x, int y)
     {
         int TreeHeight = Random.Range(MinTreeHeight, MaxTreeHeight);
         for (int i = 0; i < TreeHeight; i++)
         {
-            PlaceTile(tileAtlas.log.tileSprite, x, y+i);
+            PlaceTile(tileAtlas.log.tileSprite, x, y + i);
         }
 
         //Leaves
@@ -336,7 +321,7 @@ public class TerrainGenerationScript : MonoBehaviour
         PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight + 1);
         PlaceTile(tileAtlas.leaf.tileSprite, x, y + TreeHeight + 2);
 
-        PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight );
+        PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight);
         PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + TreeHeight + 1);
 
         PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight);
@@ -344,11 +329,11 @@ public class TerrainGenerationScript : MonoBehaviour
     }
 
 
-    public void PlaceTile(Sprite tileSprite,  int x, int y)
+    public void PlaceTile(Sprite tileSprite, int x, int y)
     {
         GameObject newTile = new GameObject();
 
-        float chunkCoord = (Mathf.Round(x / chunkSize) * chunkSize)/chunkSize;
+        float chunkCoord = (Mathf.Round(x / chunkSize) * chunkSize) / chunkSize;
         newTile.transform.parent = worldChunks[(int)chunkCoord].transform;
 
         newTile.AddComponent<SpriteRenderer>();
@@ -360,46 +345,54 @@ public class TerrainGenerationScript : MonoBehaviour
             newTile.AddComponent<BoxCollider2D>();
         }
 
-        
-        worldTiles[x,y] = newTile;
+
+        worldTiles[x, y] = newTile;
     }
 
-    public GameObject CheckNextTile (string Direction, int CurrentTileX, int CurrentTileY)
+    public GameObject CheckNextTile(string Direction, int CurrentTileX, int CurrentTileY)
     {
         GameObject newCheckedTile = new GameObject();
         if (Direction == "r")
         {
-            if (CurrentTileX == worldSize-1){
+            if (CurrentTileX == worldSize - 1)
+            {
                 newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
             }
-            else{
-            newCheckedTile = worldTiles[CurrentTileX + 1, CurrentTileY];
+            else
+            {
+                newCheckedTile = worldTiles[CurrentTileX + 1, CurrentTileY];
             }
         }
         else if (Direction == "l")
         {
-            if (CurrentTileX == 0){
+            if (CurrentTileX == 0)
+            {
                 newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
             }
-            else{
-            newCheckedTile = worldTiles[CurrentTileX - 1, CurrentTileY];
+            else
+            {
+                newCheckedTile = worldTiles[CurrentTileX - 1, CurrentTileY];
             }
         }
         else if (Direction == "u")
         {
-            if (CurrentTileY == worldSize-1){
+            if (CurrentTileY == worldSize - 1)
+            {
                 newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
             }
-            else{
-            newCheckedTile = worldTiles[CurrentTileX, CurrentTileY + 1];
+            else
+            {
+                newCheckedTile = worldTiles[CurrentTileX, CurrentTileY + 1];
             }
         }
         else if (Direction == "d")
         {
-            if (CurrentTileY == 0){
+            if (CurrentTileY == 0)
+            {
                 newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
             }
-            else{
+            else
+            {
                 newCheckedTile = worldTiles[CurrentTileX, CurrentTileY - 1];
             }
         }
