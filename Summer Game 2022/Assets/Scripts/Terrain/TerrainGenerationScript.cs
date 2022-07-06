@@ -148,7 +148,6 @@ public class TerrainGenerationScript : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(Camera.fieldOfView);
 
         //Updating time and player coords
         seconds += Time.deltaTime;
@@ -159,10 +158,11 @@ public class TerrainGenerationScript : MonoBehaviour
 
         if (CurrentPlayerX >= 0 && CurrentPlayerX < worldSize && CurrentPlayerY >= 0 && CurrentPlayerY < worldSize)
         {
-            Debug.Log(CheckNextTile("d", (int)CurrentPlayerX, (int)CurrentPlayerY));
+            //Debug.Log(CheckNextTile("d", (int)CurrentPlayerX, (int)CurrentPlayerY));
         }
 
         RefreshChunks();
+        //CheckTallGrassSurvivability();
     }
 
 
@@ -343,6 +343,13 @@ public class TerrainGenerationScript : MonoBehaviour
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
         newTile.name = tileSprite.name;
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+
+        if (tileSprite == tileAtlas.dirt.tileSprite || tileSprite == tileAtlas.stone.tileSprite || tileSprite == tileAtlas.leaf.tileSprite || tileSprite == tileAtlas.coal.tileSprite || tileSprite == tileAtlas.iron.tileSprite || tileSprite == tileAtlas.gold.tileSprite || tileSprite == tileAtlas.diamond.tileSprite)
+        {
+            int rotationNum = (Random.Range(0, 4)) * 90;
+            newTile.transform.Rotate(new Vector3(0, 0, rotationNum));
+        }
+
         if (tileSprite != tileAtlas.log.tileSprite && tileSprite != tileAtlas.tallgrass.tileSprite && tileSprite != tileAtlas.leaf.tileSprite)
         {
             newTile.AddComponent<BoxCollider2D>();
