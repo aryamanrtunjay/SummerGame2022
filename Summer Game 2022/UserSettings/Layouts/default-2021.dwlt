@@ -20,7 +20,11 @@ MonoBehaviour:
     height: 989
   m_ShowMode: 4
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_Title: Project
+=======
+  m_Title: Scene
+>>>>>>> parent of 0052e08 (updated sprites psd file)
 =======
   m_Title: Scene
 >>>>>>> parent of 0052e08 (updated sprites psd file)
@@ -343,6 +347,9 @@ MonoBehaviour:
     m_SelectedIDs: 50790000
     m_LastClickedID: 31056
     m_ExpandedIDs: 00000000b05e0000ba5e000000ca9a3bffffff7f
+<<<<<<< HEAD
+>>>>>>> parent of 0052e08 (updated sprites psd file)
+=======
 >>>>>>> parent of 0052e08 (updated sprites psd file)
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -372,7 +379,11 @@ MonoBehaviour:
     m_SelectedIDs: 
     m_LastClickedID: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_ExpandedIDs: 00000000465e0000
+=======
+    m_ExpandedIDs: 00000000b05e0000
+>>>>>>> parent of 0052e08 (updated sprites psd file)
 =======
     m_ExpandedIDs: 00000000b05e0000
 >>>>>>> parent of 0052e08 (updated sprites psd file)
@@ -506,7 +517,11 @@ MonoBehaviour:
       m_SelectedIDs: 
       m_LastClickedID: 0
 <<<<<<< HEAD
+<<<<<<< HEAD
       m_ExpandedIDs: 2af9ffff6af9ffffaef9fffff4f9ffff20fbffff
+=======
+      m_ExpandedIDs: 2efbffff165e0000
+>>>>>>> parent of 0052e08 (updated sprites psd file)
 =======
       m_ExpandedIDs: 2efbffff165e0000
 >>>>>>> parent of 0052e08 (updated sprites psd file)
