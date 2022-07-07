@@ -52,35 +52,35 @@ public class Inventory : MonoBehaviour
             currSelected = 5;
         }
 
-        slot1.localScale = new Vector3(36f, 36f, 36f);
+        slot1.localScale = new Vector3(240f, 240f, 240f);
 
-        slot2.localScale = new Vector3(36f, 36f, 36f);
+        slot2.localScale = new Vector3(240f, 240f, 240f);
 
-        slot3.localScale = new Vector3(36f, 36f, 36f);
+        slot3.localScale = new Vector3(240f, 240f, 240f);
 
-        slot4.localScale = new Vector3(36f, 36f, 36f);
+        slot4.localScale = new Vector3(240f, 240f, 240f);
 
-        slot5.localScale = new Vector3(36f, 36f, 36f);
+        slot5.localScale = new Vector3(240f, 240f, 240f);
 
         if (currSelected == 1)
         {
-            slot1.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
+            slot1.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
         }
         else if(currSelected == 2)
         {
-            slot2.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
+            slot2.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
         }
         else if (currSelected == 3)
         {
-            slot3.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
+            slot3.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
         }
         else if (currSelected == 4)
         {
-            slot4.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
+            slot4.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
         }
         else if (currSelected == 5)
         {
-            slot5.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
+            slot5.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
         }
         
     }
