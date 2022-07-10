@@ -139,7 +139,7 @@ public class TerrainGenerationScript : MonoBehaviour
                 worldChunks[i].SetActive(false);
 
                 ActiveChunks.Remove(i);
-                
+
             }
             else
             {
@@ -174,12 +174,13 @@ public class TerrainGenerationScript : MonoBehaviour
 
         int CurrentTime = (int)(LightingTickCounter);
 
-        if (CurrentTime % 5 == 0){
+        if (CurrentTime % 5 == 0)
+        {
             //Debug.Log("Updated Lighting");
             UpdateLighting();
         }
 
-        LightingTickCounter += 1*Time.deltaTime;
+        LightingTickCounter += 1 * Time.deltaTime;
 
 
     }
@@ -434,15 +435,18 @@ public class TerrainGenerationScript : MonoBehaviour
         return newCheckedTile;
     }
 
-    public void UpdateLighting(){
+    public void UpdateLighting()
+    {
         //Updates light values
         for (int i = 0; i < worldChunks.Length; i++)
-        {         
+        {
             if (ActiveChunks.Contains(i))
             {
-                for (int x = (i*chunkSize); x < ((i + 1)*chunkSize); x++){
-                   for (int y = worldSize-1; y >= 0; y--){
-                        
+                for (int x = (i * chunkSize); x < ((i + 1) * chunkSize); x++)
+                {
+                    for (int y = worldSize - 1; y >= 0; y--)
+                    {
+
                         //Commented code for when blank tiles are converted from null to an object
                         // //If tile is in the top row
                         // if (y == worldSize-1){
@@ -457,25 +461,29 @@ public class TerrainGenerationScript : MonoBehaviour
                         // }
 
                         //If current tile is a terrain tile
-                        if (worldTiles[x,y] != null){
-                            if ((CheckNextTile("u", x, y )) == null){
-                                worldTiles[x,y].GetComponent<TileInfo>().lightValue = 10;
+                        if (worldTiles[x, y] != null)
+                        {
+                            if ((CheckNextTile("u", x, y)) == null)
+                            {
+                                worldTiles[x, y].GetComponent<TileInfo>().lightValue = 10;
                             }
-                            else{
-                                worldTiles[x,y].GetComponent<TileInfo>().lightValue = (worldTiles[x,y + 1].GetComponent<TileInfo>().lightValue) - 1;
+                            else
+                            {
+                                worldTiles[x, y].GetComponent<TileInfo>().lightValue = (worldTiles[x, y + 1].GetComponent<TileInfo>().lightValue) - 1;
                             }
 
-                            if (worldTiles[x,y].GetComponent<TileInfo>().lightValue < 0){
-                                worldTiles[x,y].GetComponent<TileInfo>().lightValue = 0;
+                            if (worldTiles[x, y].GetComponent<TileInfo>().lightValue < 0)
+                            {
+                                worldTiles[x, y].GetComponent<TileInfo>().lightValue = 0;
                             }
 
-                            float CurrentTileLighting = (float)((worldTiles[x,y].GetComponent<TileInfo>().lightValue) * 0.1); 
-                            worldTiles[x,y].GetComponent<SpriteRenderer>().color = new Color(CurrentTileLighting,CurrentTileLighting,CurrentTileLighting);
+                            float CurrentTileLighting = (float)((worldTiles[x, y].GetComponent<TileInfo>().lightValue) * 0.1);
+                            worldTiles[x, y].GetComponent<SpriteRenderer>().color = new Color(CurrentTileLighting, CurrentTileLighting, CurrentTileLighting);
                         }
 
-                        
 
-                   }
+
+                    }
                 }
             }
         }
