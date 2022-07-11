@@ -4,18 +4,5 @@ using UnityEngine;
 
 public class TileInfo : MonoBehaviour
 {
-
-
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public int lightValue = 5; //Between 0 - 10 (0 = black, 10 = normal)
 }
