@@ -16,8 +16,8 @@ public class Inventory : MonoBehaviour
     private RectTransform slot4;
     private RectTransform slot5;
 
-    private Vector2 selectedSize = new Vector2(1.5f, 1.5f);
-    private Vector2 notSelectedSize = new Vector2(1f, 1f);
+    private Vector2 selectedSize = new Vector2(36.5f, 36.5f);
+    private Vector2 notSelectedSize = new Vector2(36f, 36f);
 
     private int currSelected = 1;
     // Start is called before the first frame update
@@ -52,35 +52,35 @@ public class Inventory : MonoBehaviour
             currSelected = 5;
         }
 
-        slot1.localScale = new Vector3(240f, 240f, 240f);
+        slot1.localScale = new Vector3(36f, 36f, 36f);
 
-        slot2.localScale = new Vector3(240f, 240f, 240f);
+        slot2.localScale = new Vector3(36f, 36f, 36f);
 
-        slot3.localScale = new Vector3(240f, 240f, 240f);
+        slot3.localScale = new Vector3(36f, 36f, 36f);
 
-        slot4.localScale = new Vector3(240f, 240f, 240f);
+        slot4.localScale = new Vector3(36f, 36f, 36f);
 
-        slot5.localScale = new Vector3(240f, 240f, 240f);
+        slot5.localScale = new Vector3(36f, 36f, 36f);
 
         if (currSelected == 1)
         {
-            slot1.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
+            slot1.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
         }
         else if(currSelected == 2)
         {
-            slot2.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
+            slot2.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
         }
         else if (currSelected == 3)
         {
-            slot3.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
+            slot3.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
         }
         else if (currSelected == 4)
         {
-            slot4.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
+            slot4.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
         }
         else if (currSelected == 5)
         {
-            slot5.localScale = new Vector3(240f * 1.2f, 240f * 1.2f, 240f);
+            slot5.localScale = new Vector3(36f * 1.2f, 36f * 1.2f, 36f);
         }
         
     }

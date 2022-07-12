@@ -18,15 +18,15 @@ public class MovePlayer : MonoBehaviour
     void Update()
     {
         // Decrease X velocity if A is pressed by changing change in X
-        if(Input.GetKey("a"))
+        if(Input.GetKey("a") && dp.x >= -12f)
         {
-            dp.x -= 0.01f;
+            dp.x -= 0.02f;
         }
 
         // Increase X velocity if D is pressed by changing change in X
-        if (Input.GetKey("d"))
+        if (Input.GetKey("d") && dp.x <= 12f)
         {
-            dp.x += 0.01f;
+            dp.x += 0.02f;
         }
 
 
@@ -37,11 +37,11 @@ public class MovePlayer : MonoBehaviour
             {
                 if (dp.x < -0.11)
                 {
-                    dp.x += 0.05f;
+                    dp.x += 0.1f;
                 }
                 else if (dp.x > 0.11)
                 {
-                    dp.x -= 0.05f;
+                    dp.x -= 0.1f;
                 }
                 else
                 {
@@ -52,11 +52,11 @@ public class MovePlayer : MonoBehaviour
             {
                 if (dp.x < -0.11)
                 {
-                    dp.x += 0.008f;
+                    dp.x += 0.013f;
                 }
                 else if (dp.x > 0.11)
                 {
-                    dp.x -= 0.008f;
+                    dp.x -= 0.013f;
                 }
                 else
                 {
@@ -66,7 +66,7 @@ public class MovePlayer : MonoBehaviour
         }
 
         // Check collisions
-        RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+        RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 2.5f);
 
         if(down.collider == null)
         {
@@ -93,7 +93,7 @@ public class MovePlayer : MonoBehaviour
     {
         RaycastHit2D left = Physics2D.Raycast(transform.position, Vector2.left, 1f);
         RaycastHit2D right = Physics2D.Raycast(transform.position, Vector2.right, 1f);
-        RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+        RaycastHit2D down = Physics2D.Raycast(transform.position, Vector2.down, 4f);
         RaycastHit2D up = Physics2D.Raycast(transform.position, Vector2.up, 1f);
 
         if (left.collider != null || right.collider != null)
