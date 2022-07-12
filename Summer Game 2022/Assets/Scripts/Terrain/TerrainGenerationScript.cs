@@ -127,7 +127,7 @@ public class TerrainGenerationScript : MonoBehaviour
         PlayerPosition.Add(location.x);
         PlayerPosition.Add(location.y);
 
-        UpdateLighting(true);
+        // UpdateLighting(true);
 
     }
 
