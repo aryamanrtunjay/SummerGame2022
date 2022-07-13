@@ -33,7 +33,7 @@ public class Inventory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(currSelected);
+    
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             currSelected++;

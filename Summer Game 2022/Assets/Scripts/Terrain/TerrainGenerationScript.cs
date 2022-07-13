@@ -133,7 +133,7 @@ public class TerrainGenerationScript : MonoBehaviour
     {
         for (int i = 0; i < worldChunks.Length; i++)
         {
-            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > Camera.fieldOfView + 15)
+            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > Camera.fieldOfView + 25)
             {
                 worldChunks[i].SetActive(false);
 
