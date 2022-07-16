@@ -66,19 +66,7 @@ public class TerrainGenerationScript : MonoBehaviour
 
     private void OnValidate()
     {
-        if (caveNoiseTexture == null)
-        {
-            caveNoiseTexture = new Texture2D(worldSize, worldSize);
-            coalSpread = new Texture2D(worldSize, worldSize);
-            ironSpread = new Texture2D(worldSize, worldSize);
-            goldSpread = new Texture2D(worldSize, worldSize);
-            diamondSpread = new Texture2D(worldSize, worldSize);
-        }
-        GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
-        GenerateNoiseTexture(coalRarity, coalVeinSize, coalSpread);
-        GenerateNoiseTexture(ironRarity, ironVeinSize, ironSpread);
-        GenerateNoiseTexture(goldRarity, goldVeinSize, goldSpread);
-        GenerateNoiseTexture(diamondRarity, diamondVeinSize, diamondSpread);
+        
     }
 
     private void Start()
@@ -89,14 +77,14 @@ public class TerrainGenerationScript : MonoBehaviour
         //Generate Terain
         worldTiles = new GameObject[worldSize, worldSize];
         seed = Random.Range(-10000, 10000);
-        if (caveNoiseTexture == null)
-        {
-            caveNoiseTexture = new Texture2D(worldSize, worldSize);
-            coalSpread = new Texture2D(worldSize, worldSize);
-            ironSpread = new Texture2D(worldSize, worldSize);
-            goldSpread = new Texture2D(worldSize, worldSize);
-            diamondSpread = new Texture2D(worldSize, worldSize);
-        }
+        
+            
+        caveNoiseTexture = new Texture2D(10000, 225);
+        coalSpread = new Texture2D(10000, 225);
+        ironSpread = new Texture2D(10000, 225);
+        goldSpread = new Texture2D(10000, 225);
+        diamondSpread = new Texture2D(10000, 225);
+    
 
 
         GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
@@ -241,7 +229,7 @@ public class TerrainGenerationScript : MonoBehaviour
 
                         if (ironSpread.GetPixel(x, y).r > 0.5f)
                         {
-                            if (y >= height * 0.4 && y <= height * 0.7)
+                            if (y >= height * 0.4 && y <= height * 0.65)
                             {
                                 tileSprite = tileAtlas.iron.tileSprite;
                             }
