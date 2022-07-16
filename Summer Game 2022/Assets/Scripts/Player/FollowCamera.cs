@@ -19,8 +19,8 @@ public class FollowCamera : MonoBehaviour
         // Assign camera pos to variable to make individual values mutable
         Vector3 camPos = transform.position;
 
-        // If player is 13 units away from camera, then follow
-        if (Vector3.Distance(playerTransform.position, camPos) >= 13)
+        // If player is 5 units away from camera, then follow
+        if (Vector3.Distance(playerTransform.position, camPos) >= 5)
         {
             // Change camera pos by 1/100th of distance between player and camera (smoothens follow)
             camPos.x += (playerTransform.position.x - camPos.x) * 0.01f;
