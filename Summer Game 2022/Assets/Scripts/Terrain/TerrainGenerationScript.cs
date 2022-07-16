@@ -4,26 +4,21 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
-
     private float LightingTickCounter = 0;
-
     public Location location;
     public Camera Camera;
     public SpawnPoint SpawnPoint;
-
-
+    public int fullSize = 15000;
+    private int fullHeight = 225;
     private float seconds = 0;
     private List<int> ActiveChunks = new List<int>();
-
 
     [Header("World Settings (world size must be divisible by chunk size)")]
     public int worldSize = 320;
     public int chunkSize = 16;
     public float noiseFreq = 0.03f;
     private float seed;
-
     private GameObject[] worldChunks;
-
     public GameObject[,] worldTiles;
     public Texture2D caveNoiseTexture; //black = caves
 
@@ -54,38 +49,25 @@ public class TerrainGenerationScript : MonoBehaviour
     public Texture2D goldSpread;
     public Texture2D diamondSpread;
 
-
     [Header("Player Vars")]
     public List<float> PlayerPosition = new List<float>();
     int PlayerStartX;
     int PlayerStartY;
 
-
     [Header("Tile Atlas")]
     public TileAtlas tileAtlas;
 
-    private void OnValidate()
-    {
-        
-    }
-
     private void Start()
     {
-
-
-
         //Generate Terain
-        worldTiles = new GameObject[worldSize, worldSize];
+        worldTiles = new GameObject[fullSize, fullHeight];
         seed = Random.Range(-10000, 10000);
-        
             
-        caveNoiseTexture = new Texture2D(10000, 225);
-        coalSpread = new Texture2D(10000, 225);
-        ironSpread = new Texture2D(10000, 225);
-        goldSpread = new Texture2D(10000, 225);
-        diamondSpread = new Texture2D(10000, 225);
-    
-
+        caveNoiseTexture = new Texture2D(fullSize, fullHeight);
+        coalSpread = new Texture2D(fullSize, fullHeight);
+        ironSpread = new Texture2D(fullSize, fullHeight);
+        goldSpread = new Texture2D(fullSize, fullHeight);
+        diamondSpread = new Texture2D(fullSize, fullHeight);
 
         GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
         GenerateNoiseTexture(coalRarity, coalVeinSize, coalSpread);
@@ -94,19 +76,16 @@ public class TerrainGenerationScript : MonoBehaviour
         GenerateNoiseTexture(diamondRarity, diamondVeinSize, diamondSpread);
 
         GenerateChunks();
-        GenerateTerrain();
-
-
+        GenerateTerrain(0, worldSize);
 
         RefreshChunks();
-
+        
         PlayerStartX = (int)Mathf.Round(worldSize / 2);
-        // PlayerStartY = worldSize;
-        for (int i = worldSize - 1; i >= 0; i--)
+        for (int i = fullHeight - 1; i >= 0; i--)
         {
             if (worldTiles[PlayerStartX - 1, i] != null)
             {
-                PlayerStartY = (int)worldTiles[PlayerStartX - 1, i].transform.position.y + 3;
+                PlayerStartY = (int)worldTiles[PlayerStartX - 1, i].transform.position.y + 5;
                 i = -1;
             }
         }
@@ -114,7 +93,19 @@ public class TerrainGenerationScript : MonoBehaviour
         SpawnPoint.spawn.y = PlayerStartY;
         PlayerPosition.Add(location.x);
         PlayerPosition.Add(location.y);
+    }
 
+    void Update()
+    {
+        //Updating time and player coords
+        seconds += Time.deltaTime;
+        PlayerPosition[0] = Mathf.Round(location.x - 0.5f);
+        PlayerPosition[1] = Mathf.Round(location.y - 0.5f);
+        float CurrentPlayerX = PlayerPosition[0];
+        float CurrentPlayerY = PlayerPosition[1];
+
+        checkChunkGen();
+        RefreshChunks();
     }
 
     void RefreshChunks()
@@ -124,9 +115,7 @@ public class TerrainGenerationScript : MonoBehaviour
             if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > Camera.fieldOfView + 15)
             {
                 worldChunks[i].SetActive(false);
-
                 ActiveChunks.Remove(i);
-
             }
             else
             {
@@ -137,46 +126,22 @@ public class TerrainGenerationScript : MonoBehaviour
 
     }
 
-
-
-
-    void Update()
+    public void checkChunkGen ()
     {
-
-
-        //Updating time and player coords
-        seconds += Time.deltaTime;
-        PlayerPosition[0] = Mathf.Round(location.x - 0.5f);
-        PlayerPosition[1] = Mathf.Round(location.y - 0.5f);
-        float CurrentPlayerX = PlayerPosition[0];
-        float CurrentPlayerY = PlayerPosition[1];
-
-        if (CurrentPlayerX >= 0 && CurrentPlayerX < worldSize && CurrentPlayerY >= 0 && CurrentPlayerY < worldSize)
-        {
-            //Debug.Log(CheckNextTile("d", (int)CurrentPlayerX, (int)CurrentPlayerY));
+        if (PlayerPosition[0] + 50 > worldSize){
+            GenerateNewChunk((worldSize/10));
+            worldSize += 10;
         }
-
-        RefreshChunks();
-        //CheckTallGrassSurvivability();
-
-        int CurrentTime = (int)(LightingTickCounter);
-
-        // if (CurrentTime % 5 == 0)
-        // {
-        //     //Debug.Log("Updated Lighting");
-        //     UpdateLighting();
-        // }
-
-        LightingTickCounter += 1 * Time.deltaTime;
-
-
     }
 
-
+    public void GenerateNewChunk (int ChunkNum)
+    {
+        GenerateTerrain(ChunkNum * 10, (ChunkNum + 1) * 10);
+    }
 
     public void GenerateChunks()
     {
-        int numOfChunks = worldSize / chunkSize;
+        int numOfChunks = fullSize / chunkSize;
         worldChunks = new GameObject[numOfChunks];
         for (int i = 0; i < numOfChunks; i++)
         {
@@ -187,9 +152,9 @@ public class TerrainGenerationScript : MonoBehaviour
         }
     }
 
-    public void GenerateTerrain()
+    public void GenerateTerrain(int xStart, int xEnd)
     {
-        for (int x = 0; x < worldSize; x++)
+        for (int x = xStart; x < xEnd; x++)
         {
             float height = Mathf.PerlinNoise((x + seed) * TerrainFreq, seed * TerrainFreq) * HeightMultiplier + HeightAddition;
 
@@ -225,8 +190,6 @@ public class TerrainGenerationScript : MonoBehaviour
                 {
                     if (y < height - dirtlayerDepth)
                     {
-
-
                         if (ironSpread.GetPixel(x, y).r > 0.5f)
                         {
                             if (y >= height * 0.4 && y <= height * 0.65)
@@ -287,7 +250,6 @@ public class TerrainGenerationScript : MonoBehaviour
                         }
                     }
                 }
-
             }
         }
 
@@ -295,7 +257,6 @@ public class TerrainGenerationScript : MonoBehaviour
 
     public void GenerateNoiseTexture(float frequency, float limit, Texture2D noiseTexture)
     {
-
         for (int x = 0; x < noiseTexture.width; x++)
         {
             for (int y = 0; y < noiseTexture.height; y++)
@@ -313,10 +274,7 @@ public class TerrainGenerationScript : MonoBehaviour
         }
 
         noiseTexture.Apply();
-
     }
-
-
 
     void GenerateTree(int x, int y)
     {
@@ -337,7 +295,6 @@ public class TerrainGenerationScript : MonoBehaviour
         PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight);
         PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight + 1);
     }
-
 
     public void PlaceTile(Sprite tileSprite, int x, int y)
     {
@@ -363,8 +320,6 @@ public class TerrainGenerationScript : MonoBehaviour
         {
             newTile.AddComponent<BoxCollider2D>();
         }
-
-
         worldTiles[x, y] = newTile;
     }
 
@@ -395,7 +350,7 @@ public class TerrainGenerationScript : MonoBehaviour
         }
         else if (Direction == "u")
         {
-            if (CurrentTileY == worldSize - 1)
+            if (CurrentTileY == fullHeight - 1)
             {
                 newCheckedTile = worldTiles[CurrentTileX, CurrentTileY];
             }
@@ -421,6 +376,5 @@ public class TerrainGenerationScript : MonoBehaviour
         }
         return newCheckedTile;
     }
-
 }
 

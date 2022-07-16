@@ -1,3 +1,5 @@
+using System.Data.Common;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,14 +19,15 @@ public class MovePlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         // Decrease X velocity if A is pressed by changing change in X
-        if(Input.GetKey("a") && dp.x >= -12f)
+        if(Input.GetKey("a") && dp.x >= -6f)
         {
             dp.x -= 0.02f;
         }
 
         // Increase X velocity if D is pressed by changing change in X
-        if (Input.GetKey("d") && dp.x <= 12f)
+        if (Input.GetKey("d") && dp.x <= 6f)
         {
             dp.x += 0.02f;
         }
@@ -76,7 +79,7 @@ public class MovePlayer : MonoBehaviour
         // Increase Y velocity if D is pressed by changing change in X
         if (Input.GetKey("space") && isGrounded)
         {
-            dp.y = 15f;
+            dp.y = 10f;
             isGrounded = false;
         }
 
