@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TerrainGenerationScript : MonoBehaviour
 {
-    private float LightingTickCounter = 0;
     public Location location;
     public Camera Camera;
     public SpawnPoint SpawnPoint;
