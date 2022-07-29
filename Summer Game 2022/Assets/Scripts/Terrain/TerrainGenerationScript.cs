@@ -54,7 +54,6 @@ public class TerrainGenerationScript : MonoBehaviour
     public Texture2D goldSpread;
     public Texture2D diamondSpread;
 
-
     [Header("Player Vars")]
     public List<float> PlayerPosition = new List<float>();
     int PlayerStartX;
@@ -64,20 +63,11 @@ public class TerrainGenerationScript : MonoBehaviour
     [Header("Tile Atlas")]
     public TileAtlas tileAtlas;
 
-    private void OnValidate()
-    {
-        
-    }
-
     private void Start()
     {
-
-
-
         //Generate Terain
         worldTiles = new GameObject[worldSize, worldSize];
         seed = Random.Range(-10000, 10000);
-        
             
         caveNoiseTexture = new Texture2D(10000, 225);
         coalSpread = new Texture2D(10000, 225);
@@ -85,8 +75,6 @@ public class TerrainGenerationScript : MonoBehaviour
         goldSpread = new Texture2D(10000, 225);
         diamondSpread = new Texture2D(10000, 225);
     
-
-
         GenerateNoiseTexture(caveFreq, CaveChance, caveNoiseTexture);
         GenerateNoiseTexture(coalRarity, coalVeinSize, coalSpread);
         GenerateNoiseTexture(ironRarity, ironVeinSize, ironSpread);
@@ -116,29 +104,6 @@ public class TerrainGenerationScript : MonoBehaviour
         PlayerPosition.Add(location.y);
 
     }
-
-    void RefreshChunks()
-    {
-        for (int i = 0; i < worldChunks.Length; i++)
-        {
-            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > Camera.fieldOfView + 15)
-            {
-                worldChunks[i].SetActive(false);
-
-                ActiveChunks.Remove(i);
-
-            }
-            else
-            {
-                worldChunks[i].SetActive(true);
-                ActiveChunks.Add(i);
-            }
-        }
-
-    }
-
-
-
 
     void Update()
     {
@@ -172,7 +137,25 @@ public class TerrainGenerationScript : MonoBehaviour
 
     }
 
+    void RefreshChunks()
+    {
+        for (int i = 0; i < worldChunks.Length; i++)
+        {
+            if (Vector2.Distance(new Vector2((i * chunkSize) + (chunkSize / 2), 0), new Vector2(location.x, 0)) > Camera.fieldOfView + 15)
+            {
+                worldChunks[i].SetActive(false);
 
+                ActiveChunks.Remove(i);
+
+            }
+            else
+            {
+                worldChunks[i].SetActive(true);
+                ActiveChunks.Add(i);
+            }
+        }
+
+    }
 
     public void GenerateChunks()
     {
@@ -316,8 +299,6 @@ public class TerrainGenerationScript : MonoBehaviour
 
     }
 
-
-
     void GenerateTree(int x, int y)
     {
         int TreeHeight = Random.Range(MinTreeHeight, MaxTreeHeight);
@@ -337,7 +318,6 @@ public class TerrainGenerationScript : MonoBehaviour
         PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight);
         PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + TreeHeight + 1);
     }
-
 
     public void PlaceTile(Sprite tileSprite, int x, int y)
     {
